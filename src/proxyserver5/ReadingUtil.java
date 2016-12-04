@@ -7,19 +7,19 @@
 package proxyserver5;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author ASUS
  */
-public class Global {
-    public static boolean isDebug = false;
-    public static boolean logInfo = true;
-    public static final void readHeaders(StringBuilder sb, InputStream in, HashMap<String, String> headers) {
+public class ReadingUtil {
+	static Logger logger = LoggerFactory.getLogger(ReadingUtil.class.getName());
+    public final void readHeaders(StringBuilder sb, InputStream in, HashMap<String, String> headers) {
         int c;
         StringBuilder line = new StringBuilder();
         String[] parts;
@@ -57,11 +57,11 @@ public class Global {
             e.printStackTrace();
         }
     }
-    public static final void readHeaders(StringBuilder sb, Scanner in, HashMap<String, String> headers) {
+    public final void readHeaders(StringBuilder sb, Scanner in, HashMap<String, String> headers) {
         String line;
         String[] parts;
         try {
-            Logger.logDebug("<reading headers>");
+        	logger.debug("<reading headers>");
             while(true) {
                 line = in.nextLine();
                 //System.out.println(line);
@@ -78,21 +78,18 @@ public class Global {
                 }
                 headers.put(parts[0], parts[1]);
             }
-            Logger.logDebug("<read headers>");
+            logger.debug("<read headers>");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public static String readLineFromStream(InputStream in) {
+    public String readLineFromStream(InputStream in) {
         StringBuilder sb = new StringBuilder();
         int c;
         try {
-            //System.out.println("<reading line>");
             while(!sb.toString().endsWith("\r\n") && (c = in.read()) != -1) {
-                //System.out.print((char)c);
                 sb.append((char)c);
             }
-            //System.out.println("<read line>");
         } catch (Exception e) {
             
         }

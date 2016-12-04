@@ -8,7 +8,6 @@ package proxyserver5;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,14 +55,11 @@ public class UserResponse {
         catch(Exception e) {
                 
         }
-//        System.out.print("\n<begin server response>\n");
-        //System.out.print(serverResponse.getResponseRaw());
-//        System.out.print("\n<end server response>\n");
+
         try {
             out.flush();
         } catch (IOException ex) {
             Logger.getLogger(UserResponse.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        System.out.println("Flushed user response");
     }
 }

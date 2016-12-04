@@ -12,15 +12,20 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author ASUS
  */
-public class Connection implements Callable{
+public class Connection implements Callable<Object>{
     private Socket socket;
     private HashMap<String, Integer> requests;
     private final int id;
     private static int counter = 0;
+
+	static Logger logger = LoggerFactory.getLogger(Connection.class.getName());
 
     public Connection(Socket socket, HashMap<String, Integer> requests) {
         this.id = ++counter;
@@ -35,17 +40,15 @@ public class Connection implements Callable{
     public void setSocket(Socket socket) {
         this.socket = socket;
     }
-    @Override
     public Object call() {
         OutputStream out;
         Scanner in;
         Socket serverSocket = null;
         try {
             while(!socket.isClosed()) {
-//                f.format("\n<begin>");
                 out = socket.getOutputStream();
                 in = new Scanner(socket.getInputStream());
-                Logger.logInfo("<parsing now %d>", id);
+                logger.info("<parsing now {}>", id);
                 UserRequest userRequest = new UserRequest(in, out, serverSocket);
                 String host = userRequest.getHost();
                 synchronized(requests) {
@@ -59,22 +62,20 @@ public class Connection implements Callable{
                     }
                 }
                 ServerResponse serverResponse = userRequest.send();
-                //System.out.println(HexDump.dumpHexString(serverResponse.getResponseRaw()));
                 if(serverResponse == null) {
                     in.close();
                     out.close();
                     socket.close();
-                    Logger.logError("<returning null %d>", id);
+                    logger.error("<returning null {}>", id);
                     return null;
                 }
                 UserResponse userResponse = new UserResponse(serverResponse, out);
                 userResponse.send();
                 socket.shutdownOutput();
-                Logger.logInfo("<out %d>",id);
+                logger.info("<out {}>", id);
                 break;
-//                System.exit(0);
             }
-            Logger.logInfo("<out of while "+id+">");
+            logger.info("<out of while {}>", id);
         } catch (Exception e) {
             e.printStackTrace();
         }

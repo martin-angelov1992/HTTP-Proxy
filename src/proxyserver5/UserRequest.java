@@ -6,18 +6,23 @@
 
 package proxyserver5;
 
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Scanner;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author ASUS
  */
 public class UserRequest {
+	static Logger logger = LoggerFactory.getLogger(UserRequest.class.getName());
+
     private Scanner in;
     private OutputStream out;
     private String requestRaw;
@@ -26,16 +31,18 @@ public class UserRequest {
     private String query;
     private HashMap<String, String> headers;
     private Socket serverSocket;
+    @Inject
+    private ReadingUtil readingUtil;
 
     public UserRequest(Scanner in, OutputStream out, Socket serverSocket) {
         setOut(out);
         setIn(in);
         setServerSocket(serverSocket);
-        headers = new HashMap();
+        headers = new HashMap<>();
         requestRaw = "";
-        Logger.logDebug("<reading user request>");
+        logger.debug("<reading user request>");
         readRequest();
-        Logger.logDebug("<read user request>");
+        logger.debug("<read user request>");
     }
 
     public String getMethod() {
@@ -86,14 +93,14 @@ public class UserRequest {
         this.host = host;
     }
     public void readRequest() {
-        Logger.logDebug("<checking for next line>");
+        logger.debug("<checking for next line>");
         if(!in.hasNextLine()) {
-            Logger.logDebug("<no next line>");
+            logger.debug("<no next line>");
             return;
         }
-        Logger.logDebug("<reading first line>");
+        logger.debug("<reading first line>");
         String firstLine = in.nextLine();
-        Logger.logDebug("<read first line>");
+        logger.debug("<read first line>");
         requestRaw += firstLine+"\r\n";
         String[] parts = firstLine.split(" ");
         if(parts.length < 2) {
@@ -101,12 +108,10 @@ public class UserRequest {
         }
         method = parts[0];
         query = parts[1];
-//        System.out.println("Reading user headers");
         StringBuilder sb = new StringBuilder();
         sb.append(requestRaw);
-        Global.readHeaders(sb, in, headers);
+        readingUtil.readHeaders(sb, in, headers);
         requestRaw = sb.toString();
-//        System.out.println("Read user headers");
         if(headers.get("Host") != null) {
             host = headers.get("Host");
         }

@@ -7,33 +7,31 @@
 package proxyserver5;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  *
  * @author ASUS
  */
 public class ProxyServer5 {
+	static Logger logger = LoggerFactory.getLogger(ProxyServer5.class.getName());
 
     /**
      * @param args the command line arguments
      */
     private static final int DEFAULT_PORT = 12345;
-    private static final int START_THREADS = 10;
-    public static void main(String[] args) throws IOException {
-        ServerSocket sock = null;
-        HashMap<String, Integer> requests = new HashMap();
-        Runtime.getRuntime().addShutdownHook(new OnShutdown(requests));
+    public void main(String[] args) throws IOException {
         int port = 0;
-        Logger.logInfo("Startting...");
-        ExecutorService executorService = Executors.newFixedThreadPool(START_THREADS);
+        logger.info("Startting...");
+		Injector injector = Guice.createInjector(new ProxyModule());		
+		ProxyTask task = injector.getInstance(ProxyTask.class);
         if(args.length == 0) {
-            Logger.logInfo("Using default port: %d\n", DEFAULT_PORT);
+            logger.info("Using default port: {}\n", DEFAULT_PORT);
             port = DEFAULT_PORT;
         } else {
             try {
@@ -45,25 +43,11 @@ public class ProxyServer5 {
                 die("Port can't be negative");
             }
         }
-        try {
-            sock = new ServerSocket(port);
-            while(true) {
-                Socket socket = sock.accept();
-                Logger.logInfo("Got connection");
-                executorService.submit(new Connection(socket, requests));
-            }
-        } catch (IOException e) {
-            die(String.format("Port %d is already taken\n", port));
-        } finally {
-            sock.close();
-            executorService.shutdownNow();
-            //logger.finish();
-        }
+        task.start(port);
     }
+
     public static void die(String error) {
         System.out.println(error);
         System.exit(-1);
-    }
-    
+    }   
 }
-

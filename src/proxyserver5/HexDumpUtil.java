@@ -27,25 +27,25 @@ package proxyserver5;
  */
 
 
-public class HexDump
+public class HexDumpUtil
 {
     private final static char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-    public static String dumpHexString(String str) {
+    public String dumpHexString(String str) {
         return dumpHexString(str.toCharArray());
     }
-    public static String dumpHexString(char[] array) {
+    public String dumpHexString(char[] array) {
         byte[] bytes = new byte[array.length];
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = (byte)array[i];
         }
         return dumpHexString(bytes);
     }
-    public static String dumpHexString(byte[] array)
+    public String dumpHexString(byte[] array)
     {
         return dumpHexString(array, 0, array.length);
     }
     
-    public static String dumpHexString(byte[] array, int offset, int length)
+    public String dumpHexString(byte[] array, int offset, int length)
     {
         StringBuilder result = new StringBuilder();
         
@@ -111,17 +111,17 @@ public class HexDump
         return result.toString();
     }
     
-    public static String toHexString(byte b)
+    public String toHexString(byte b)
     {
         return toHexString(toByteArray(b));
     }
 
-    public static String toHexString(byte[] array)
+    public String toHexString(byte[] array)
     {
         return toHexString(array, 0, array.length);
     }
     
-    public static String toHexString(byte[] array, int offset, int length)
+    public String toHexString(byte[] array, int offset, int length)
     {
         char[] buf = new char[length * 2];
 
@@ -136,19 +136,19 @@ public class HexDump
         return new String(buf);        
     }
     
-    public static String toHexString(int i)
+    public String toHexString(int i)
     {
         return toHexString(toByteArray(i));
     }
     
-    public static byte[] toByteArray(byte b)
+    public byte[] toByteArray(byte b)
     {
         byte[] array = new byte[1];
         array[0] = b;
         return array;
     }
     
-    public static byte[] toByteArray(int i)
+    public byte[] toByteArray(int i)
     {
         byte[] array = new byte[4];
         
@@ -160,7 +160,7 @@ public class HexDump
         return array;
     }
     
-    private static int toByte(char c)
+    private int toByte(char c)
     {
         if (c >= '0' && c <= '9') return (c - '0');
         if (c >= 'A' && c <= 'F') return (c - 'A' + 10);
@@ -169,7 +169,7 @@ public class HexDump
         throw new RuntimeException ("Invalid hex char '" + c + "'");
     }
     
-    public static byte[] hexStringToByteArray(String hexString)
+    public byte[] hexStringToByteArray(String hexString)
     {
         int length = hexString.length();
         byte[] buffer = new byte[length / 2];
