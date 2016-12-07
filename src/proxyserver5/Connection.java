@@ -8,7 +8,7 @@ package proxyserver5;
 
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 
@@ -21,13 +21,13 @@ import org.slf4j.LoggerFactory;
  */
 public class Connection implements Callable<Object>{
     private Socket socket;
-    private HashMap<String, Integer> requests;
+    private Map<String, Integer> requests;
     private final int id;
     private static int counter = 0;
 
 	static Logger logger = LoggerFactory.getLogger(Connection.class.getName());
 
-    public Connection(Socket socket, HashMap<String, Integer> requests) {
+    public Connection(Socket socket, Map<String, Integer> requests) {
         this.id = ++counter;
         setRequests(requests);
         setSocket(socket);
@@ -82,11 +82,11 @@ public class Connection implements Callable<Object>{
         return null;
     }
 
-    public HashMap<String, Integer> getRequests() {
+    public Map<String, Integer> getRequests() {
         return requests;
     }
 
-    public void setRequests(HashMap<String, Integer> requests) {
+    public void setRequests(Map<String, Integer> requests) {
         this.requests = requests;
     }
 }

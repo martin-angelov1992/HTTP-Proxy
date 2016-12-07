@@ -46,7 +46,6 @@ public class UserResponse {
 //"0\r\n" +
 //"\r\n");
         char[] ch = serverResponse.getResponseRaw().toCharArray();
-        //System.out.print(HexDump.dumpHexString(ch));
         try {
             for (int i = 0; i < ch.length; i++) {
                 out.write(ch[i]);
