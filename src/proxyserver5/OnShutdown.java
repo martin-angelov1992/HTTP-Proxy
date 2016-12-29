@@ -6,7 +6,6 @@
 
 package proxyserver5;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,17 +14,17 @@ import java.util.Set;
  * @author ASUS
  */
 class OnShutdown extends Thread {
-    private HashMap<String, Integer> requests;
+    private Map<String, Integer> requests;
 
-    public OnShutdown(HashMap<String, Integer> requests) {
+    public OnShutdown(Map<String, Integer> requests) {
         setRequests(requests);
     }
 
-    public HashMap<String, Integer> getRequests() {
+    public Map<String, Integer> getRequests() {
         return requests;
     }
 
-    public void setRequests(HashMap<String, Integer> requests) {
+    public void setRequests(Map<String, Integer> requests) {
         this.requests = requests;
     }
     @Override

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -15,7 +16,7 @@ public class ProxyTask {
     private static final int START_THREADS = 10;
 
 	public void start(int port) throws IOException {
-        HashMap<String, Integer> requests = new HashMap<>();
+        Map<String, Integer> requests = new HashMap<>();
         Runtime.getRuntime().addShutdownHook(new OnShutdown(requests));
         ExecutorService executorService = Executors.newFixedThreadPool(START_THREADS);
         ServerSocket sock = null;

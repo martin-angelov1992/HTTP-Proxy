@@ -1,7 +1,6 @@
 package tests;
 
-import static org.mockito.Mockito.mock;
-
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.HashMap;
@@ -13,52 +12,59 @@ import java.util.Scanner;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import maventest.com.martin.SomeClass;
-import maventest.com.martin.SomeClassExt;
 import proxyserver5.Connection;
 import proxyserver5.ServerResponse;
 import proxyserver5.UserRequest;
 import proxyserver5.UserResponse;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Connection.class})
+@PrepareForTest({ Connection.class, UserRequest.class, Connection.class})
 public class ConnectionTest {
-	private SocketMock socketMock = new SocketMock();
-    private Map<String, Integer> requests = new HashMap<>();
+	@Mock
+	private Socket socketMock;
+	private Map<String, Integer> requests = new HashMap<>();
 
-	private Connection toTest = new Connection(socketMock, requests);
+	@Mock
+	private Scanner scannerMock;
 
-	private boolean doneFilling = false;
+	@Mock
+	private UserRequest userRequest;
+
+	@Mock
+	private OutputStream outputStreamMock;
 
 	private static final String SITE_1 = "google.com";
 	private static final String SITE_2 = "youtube.com";
 	private static final int SITE_1_REQUESTS_COUNT = 1;
 	private static final int SITE_2_REQUESTS_COUNT = 2;
 
+	private static final int CONNECTION_COUNT = 3;
 	@Test
-	public void test() {
-		// Close the socket in 1 second
-		Thread thread = new Thread(() -> {
-			try {
-				Thread.sleep(1000);
-				// just in case
-				while (!doneFilling) {}
-				socketMock.setClosed(true);
-			} catch (InterruptedException e) {}
+	public void test() throws Exception {
+		PowerMockito.whenNew(UserRequest.class).withArguments(scannerMock, outputStreamMock, null).then(e -> {
+			return new UserRequestMock(scannerMock, outputStreamMock, null);
 		});
+		PowerMockito.whenNew(UserResponse.class).withAnyArguments().thenReturn(new UserResponseMock(null, null));
+		PowerMockito.whenNew(Scanner.class).withParameterTypes(InputStream.class).withArguments(null)
+				.thenReturn(scannerMock);
+		PowerMockito.when(socketMock.isClosed()).then(new TimeoutInASecond());
+		PowerMockito.when(socketMock.getOutputStream()).thenReturn(outputStreamMock);
 
-		mock(UserRequest.class);
-		PowerMockito.whenNew(UserRequest.class).withNoArguments().thenReturn(UserRequestMock);
+		// Test with specific number of connections
+		for (int i = 0; i < CONNECTION_COUNT; ++i) {
+			Connection toTest = new Connection(socketMock, requests);
+			toTest.setSocket(socketMock);
+			toTest.call();
+		}
 
-		thread.start();
-		fillSocket();
 		verifyRequestsMap();
-		toTest.call();
-		doneFilling = true;
 	}
 
 	private void verifyRequestsMap() {
@@ -66,8 +72,18 @@ public class ConnectionTest {
 		Assert.assertEquals(requests.get(SITE_2).intValue(), SITE_2_REQUESTS_COUNT);
 	}
 
-	private void fillSocket() {
-		
+	private static class TimeoutInASecond implements Answer<Boolean> {
+
+		private long timeout;
+
+		public TimeoutInASecond() {
+			timeout = System.currentTimeMillis() + 1000;
+		}
+
+		@Override
+		public Boolean answer(InvocationOnMock invocation) throws Throwable {
+			return System.currentTimeMillis() > timeout;
+		}
 	}
 
 	private static class UserRequestMock extends UserRequest {
@@ -79,25 +95,26 @@ public class ConnectionTest {
 			hosts.add(SITE_2);
 		}
 
+		private String host = null;
+
 		public UserRequestMock(Scanner in, OutputStream out, Socket serverSocket) {
 			super(in, out, serverSocket);
-			if (hosts.isEmpty()) {
-				try {
-					// just block as if they are no new requests from user
-					this.wait();
-				} catch (InterruptedException e) {}
-			}
+			host = hosts.poll();
 		}
 
 		@Override
 		public String getHost() {
-			return hosts.poll();
+			return host;
 		}
 
 		@Override
 		public ServerResponse send() {
 			// Do not send anything, return dummy response
 			return new ServerResponse("");
+		}
+
+		@Override
+		public void readRequest() {
 		}
 	}
 
