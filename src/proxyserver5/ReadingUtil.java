@@ -7,7 +7,7 @@
 package proxyserver5;
 
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -19,15 +19,14 @@ import org.slf4j.LoggerFactory;
  */
 public class ReadingUtil {
 	static Logger logger = LoggerFactory.getLogger(ReadingUtil.class.getName());
-    public final void readHeaders(StringBuilder sb, InputStream in, HashMap<String, String> headers) {
+
+    public void readHeaders(StringBuilder sb, InputStream in, Map<String, String> headers) {
         int c;
         StringBuilder line = new StringBuilder();
         String[] parts;
         try {
-            //System.out.println("<reading headers>");
             while((c = in.read()) != -1) {
                 line.append((char)c);
-                //System.out.print((char)c);
                 if(line.toString().endsWith("\r\n")) {
                     parts = line.toString().split(": ", 2);
                     if(parts.length < 2) {
@@ -57,7 +56,8 @@ public class ReadingUtil {
             e.printStackTrace();
         }
     }
-    public final void readHeaders(StringBuilder sb, Scanner in, HashMap<String, String> headers) {
+
+    public void readHeaders(StringBuilder sb, Scanner in, Map<String, String> headers) {
         String line;
         String[] parts;
         try {
@@ -83,6 +83,7 @@ public class ReadingUtil {
             e.printStackTrace();
         }
     }
+
     public String readLineFromStream(InputStream in) {
         StringBuilder sb = new StringBuilder();
         int c;

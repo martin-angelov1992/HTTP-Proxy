@@ -17,8 +17,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import maventest.com.martin.SomeClass;
-import maventest.com.martin.SomeClassExt;
 import proxyserver5.Connection;
 import proxyserver5.ServerResponse;
 import proxyserver5.UserRequest;
@@ -52,7 +50,7 @@ public class ConnectionTest {
 		});
 
 		mock(UserRequest.class);
-		PowerMockito.whenNew(UserRequest.class).withNoArguments().thenReturn(UserRequestMock);
+//		PowerMockito.whenNew(UserRequest.class).withNoArguments().thenReturn(UserRequestMock);
 
 		thread.start();
 		fillSocket();

@@ -92,6 +92,7 @@ public class UserRequest {
     public void setHost(String host) {
         this.host = host;
     }
+
     public void readRequest() {
         logger.debug("<checking for next line>");
         if(!in.hasNextLine()) {
