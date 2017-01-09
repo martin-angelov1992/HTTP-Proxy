@@ -64,7 +64,6 @@ public class ReadingUtil {
         	logger.debug("<reading headers>");
             while(true) {
                 line = in.nextLine();
-                //System.out.println(line);
                 parts = line.split(": ");
                 if(parts[0].equals("Connection")) { // Keep-alive not supported
                     continue;

@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import proxyserver5.ReadingUtil;
 
@@ -21,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
+@PrepareForTest(ReadingUtil.class)
 public class ReadingUtilTest {
 
 	private ReadingUtil toTest = new ReadingUtil();
@@ -37,7 +39,19 @@ public class ReadingUtilTest {
 "Connection: keep-alive\r\n"+
 "Cookie: PHPSESSID=r2t5uvjq435r4q7ib3vtdjq120\r\n"+
 "Pragma: no-cache\r\n"+
-"Cache-Control: no-cache";
+"Cache-Control: no-cache\r\n\r\n";
+
+	private static final String EXPECTED_HEADER_STR = "GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n"+
+"Host: net.tutsplus.com\r\n"+
+"User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)\r\n"+
+"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n"+
+"Accept-Language: en-us,en;q=0.5\r\n"+
+"Accept-Encoding: gzip,deflate\r\n"+
+"Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n"+
+"Keep-Alive: 300\r\n"+
+"Cookie: PHPSESSID=r2t5uvjq435r4q7ib3vtdjq120\r\n"+
+"Pragma: no-cache\r\n"+
+"Cache-Control: no-cache\r\n\r\n";
 
 	private static final Map<String, String> EXPECTED_HEADERS = new HashMap<>();
 
@@ -49,7 +63,6 @@ public class ReadingUtilTest {
 		EXPECTED_HEADERS.put("Accept-Encoding", "gzip,deflate");
 		EXPECTED_HEADERS.put("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7");
 		EXPECTED_HEADERS.put("Keep-Alive", "300");
-		EXPECTED_HEADERS.put("Connection", "keep-alive");
 		EXPECTED_HEADERS.put("Cookie", "PHPSESSID=r2t5uvjq435r4q7ib3vtdjq120");
 		EXPECTED_HEADERS.put("Pragma", "no-cache");
 		EXPECTED_HEADERS.put("Cache-Control", "no-cache");
@@ -62,7 +75,7 @@ public class ReadingUtilTest {
 		InputStream in = mock(InputStream.class);
 		when(in.read()).then(new HeaderLetterByLetter());
 		toTest.readHeaders(sb, in, headers);
-		assertEquals(TEST_HEADER, sb.toString());
+		assertEquals(EXPECTED_HEADER_STR, sb.toString());
 		assertEquals(EXPECTED_HEADERS, headers);
 	}
 
@@ -73,7 +86,7 @@ public class ReadingUtilTest {
 		Scanner in = mock(Scanner.class);
 		when(in.nextLine()).then(new HeaderLineByLine());
 		toTest.readHeaders(sb, in, headers);
-		assertEquals(TEST_HEADER, sb.toString());
+		assertEquals(EXPECTED_HEADER_STR, sb.toString());
 		assertEquals(EXPECTED_HEADERS, headers);
 	}
 
@@ -82,7 +95,7 @@ public class ReadingUtilTest {
 		InputStream in = mock(InputStream.class);
 		when(in.read()).then(new HeaderLetterByLetter());
 		String line = toTest.readLineFromStream(in);
-		assertEquals("GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1", line);
+		assertEquals("GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n", line);
 	}
 
 	private class HeaderLineByLine implements Answer<String> {
@@ -90,7 +103,7 @@ public class ReadingUtilTest {
 		private Iterator<String> it;
 
 		public HeaderLineByLine() {
-			String[] splitted = TEST_HEADER.split("\\r\\n");
+			String[] splitted = TEST_HEADER.split("\\r\\n", -1);
 			lines = Arrays.asList(splitted);
 			it = lines.iterator();
 		}
@@ -111,7 +124,7 @@ public class ReadingUtilTest {
 			characters = new ArrayList<>(splitted.length);
 
 			for (String characterStr : splitted) {
-				characters.add(characterStr.indexOf(0));
+				characters.add(Integer.valueOf(characterStr.charAt(0)));
 			}
 
 			it = characters.iterator();

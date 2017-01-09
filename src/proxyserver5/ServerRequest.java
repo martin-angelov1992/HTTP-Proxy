@@ -90,7 +90,8 @@ public class ServerRequest {
         }
         return null;
     }
-    public String readData(InputStream in, int length) {
+
+    private String readData(InputStream in, int length) {
         StringBuilder sb = new StringBuilder();
         if(length == 0) { // Happened on youtube.com
             return sb.toString();
@@ -112,7 +113,8 @@ public class ServerRequest {
         }
         return sb.toString();
     }
-    public String readData(InputStream in) {
+
+    private String readData(InputStream in) {
         StringBuilder sb = new StringBuilder();
         int c = -2;
         try {
@@ -130,7 +132,8 @@ public class ServerRequest {
         }
         return sb.toString();
     }
-    public String readChunkedData(InputStream in) {
+
+    private String readChunkedData(InputStream in) {
         StringBuilder sb = new StringBuilder();
         String line = readingUtil.readLineFromStream(in);
         sb.append(line);

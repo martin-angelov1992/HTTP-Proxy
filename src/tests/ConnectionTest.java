@@ -25,7 +25,7 @@ import proxyserver5.UserRequest;
 import proxyserver5.UserResponse;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Connection.class, UserRequest.class, Connection.class})
+@PrepareForTest({ Connection.class, UserRequest.class})
 public class ConnectionTest {
 	@Mock
 	private Socket socketMock;
@@ -46,6 +46,7 @@ public class ConnectionTest {
 	private static final int SITE_2_REQUESTS_COUNT = 2;
 
 	private static final int CONNECTION_COUNT = 3;
+
 	@Test
 	public void test() throws Exception {
 		PowerMockito.whenNew(UserRequest.class).withArguments(scannerMock, outputStreamMock, null).then(e -> {
