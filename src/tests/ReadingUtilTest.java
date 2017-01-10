@@ -73,7 +73,7 @@ public class ReadingUtilTest {
 		Map<String, String> headers = new HashMap<>();
 		StringBuilder sb = new StringBuilder();
 		InputStream in = mock(InputStream.class);
-		when(in.read()).then(new HeaderLetterByLetter());
+		when(in.read()).then(new DataLetterByLetter(TEST_HEADER));
 		toTest.readHeaders(sb, in, headers);
 		assertEquals(EXPECTED_HEADER_STR, sb.toString());
 		assertEquals(EXPECTED_HEADERS, headers);
@@ -93,7 +93,7 @@ public class ReadingUtilTest {
 	@Test
 	public void testReadLineFromStream() throws IOException {
 		InputStream in = mock(InputStream.class);
-		when(in.read()).then(new HeaderLetterByLetter());
+		when(in.read()).then(new DataLetterByLetter(TEST_HEADER));
 		String line = toTest.readLineFromStream(in);
 		assertEquals("GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n", line);
 	}
@@ -111,32 +111,6 @@ public class ReadingUtilTest {
 		@Override
 		public String answer(InvocationOnMock invocation) throws Throwable {
 			return it.next();
-		}
-	}
-
-	private class HeaderLetterByLetter implements Answer<Integer> {
-
-		private List<Integer> characters;
-		private Iterator<Integer> it;
-
-		public HeaderLetterByLetter() {
-			String[] splitted = TEST_HEADER.split("");
-			characters = new ArrayList<>(splitted.length);
-
-			for (String characterStr : splitted) {
-				characters.add(Integer.valueOf(characterStr.charAt(0)));
-			}
-
-			it = characters.iterator();
-		}
-
-		@Override
-		public Integer answer(InvocationOnMock invocation) throws Throwable {
-			if (it.hasNext()) {
-				return it.next();
-			}
-
-			return -1;
 		}
 	}
 }
