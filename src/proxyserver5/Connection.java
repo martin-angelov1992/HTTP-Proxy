@@ -51,6 +51,8 @@ public class Connection implements Callable<Object> {
 				in = new Scanner(socket.getInputStream());
 				logger.info("<parsing now {}>", id);
 				UserRequest userRequest = new UserRequest(in, out, serverSocket);
+				userRequest.readRequest();
+		        logger.debug("<read user request>");
 				String host = userRequest.getHost();
 				synchronized (requests) {
 					if (host != null) {

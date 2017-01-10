@@ -1,27 +1,28 @@
 package tests;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import proxyserver5.ReadingUtil;
 
-import static org.junit.Assert.assertEquals;
+import proxyserver5.ReadingUtil;
+import proxyserver5.UserRequest;
+
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(ReadingUtil.class)
-public class ReadingUtilTest {
-
-	private ReadingUtil toTest = new ReadingUtil();
-
-	private static final String TEST_HEADER = 
+@PrepareForTest({Scanner.class, UserRequest.class, ReadingUtil.class})
+public class UserRequestTest {
+	private static final String TEST_REQUEST = 
 "GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n"+
 "Host: net.tutsplus.com\r\n"+
 "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)\r\n"+
@@ -35,7 +36,7 @@ public class ReadingUtilTest {
 "Pragma: no-cache\r\n"+
 "Cache-Control: no-cache\r\n\r\n";
 
-	private static final String EXPECTED_HEADER_STR = "GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n"+
+	public static final String EXPECTED_REQUEST_RAW = "GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n"+
 "Host: net.tutsplus.com\r\n"+
 "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)\r\n"+
 "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n"+
@@ -46,6 +47,15 @@ public class ReadingUtilTest {
 "Cookie: PHPSESSID=r2t5uvjq435r4q7ib3vtdjq120\r\n"+
 "Pragma: no-cache\r\n"+
 "Cache-Control: no-cache\r\n\r\n";
+
+	@Mock
+	private Scanner in;
+
+	@Mock
+	private OutputStream out;
+
+	@Mock
+	private Socket serverSocket;
 
 	private static final Map<String, String> EXPECTED_HEADERS = new HashMap<>();
 
@@ -63,32 +73,20 @@ public class ReadingUtilTest {
 	}
 
 	@Test
-	public void testReadHeadersWithInputStream() throws IOException {
-		Map<String, String> headers = new HashMap<>();
-		StringBuilder sb = new StringBuilder();
-		InputStream in = mock(InputStream.class);
-		when(in.read()).then(new DataLetterByLetter(TEST_HEADER));
-		toTest.readHeaders(sb, in, headers);
-		assertEquals(EXPECTED_HEADER_STR, sb.toString());
-		assertEquals(EXPECTED_HEADERS, headers);
-	}
+	public void testRead() throws IllegalArgumentException, IllegalAccessException {
+		when(in.hasNextLine()).thenReturn(true);
+		when(in.nextLine()).then(new DataLineByLine(TEST_REQUEST));
 
-	@Test
-	public void testReadHeadersWithScanner() {
-		Map<String, String> headers = new HashMap<>();
-		StringBuilder sb = new StringBuilder();
-		Scanner in = mock(Scanner.class);
-		when(in.nextLine()).then(new DataLineByLine(TEST_HEADER));
-		toTest.readHeaders(sb, in, headers);
-		assertEquals(EXPECTED_HEADER_STR, sb.toString());
-		assertEquals(EXPECTED_HEADERS, headers);
-	}
+		UserRequest request = new UserRequest(in, out, serverSocket);
 
-	@Test
-	public void testReadLineFromStream() throws IOException {
-		InputStream in = mock(InputStream.class);
-		when(in.read()).then(new DataLetterByLetter(TEST_HEADER));
-		String line = toTest.readLineFromStream(in);
-		assertEquals("GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n", line);
+		MemberModifier.field(UserRequest.class, "readingUtil").set(
+				request, new ReadingUtil());
+
+		request.readRequest();
+
+		Assert.assertEquals("net.tutsplus.com", request.getHost());
+		Assert.assertEquals("GET", request.getMethod());
+		Assert.assertEquals("/tutorials/other/top-20-mysql-best-practices/", request.getQuery());
+		Assert.assertEquals(EXPECTED_REQUEST_RAW, request.getRequestRaw());
 	}
 }

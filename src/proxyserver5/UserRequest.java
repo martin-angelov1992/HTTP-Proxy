@@ -41,8 +41,6 @@ public class UserRequest {
         headers = new HashMap<>();
         requestRaw = "";
         logger.debug("<reading user request>");
-        readRequest();
-        logger.debug("<read user request>");
     }
 
     public String getMethod() {
