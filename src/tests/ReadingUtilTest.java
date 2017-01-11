@@ -2,18 +2,12 @@ package tests;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import proxyserver5.ReadingUtil;
@@ -84,7 +78,7 @@ public class ReadingUtilTest {
 		Map<String, String> headers = new HashMap<>();
 		StringBuilder sb = new StringBuilder();
 		Scanner in = mock(Scanner.class);
-		when(in.nextLine()).then(new HeaderLineByLine());
+		when(in.nextLine()).then(new DataLineByLine(TEST_HEADER));
 		toTest.readHeaders(sb, in, headers);
 		assertEquals(EXPECTED_HEADER_STR, sb.toString());
 		assertEquals(EXPECTED_HEADERS, headers);
@@ -96,21 +90,5 @@ public class ReadingUtilTest {
 		when(in.read()).then(new DataLetterByLetter(TEST_HEADER));
 		String line = toTest.readLineFromStream(in);
 		assertEquals("GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n", line);
-	}
-
-	private class HeaderLineByLine implements Answer<String> {
-		private List<String> lines;
-		private Iterator<String> it;
-
-		public HeaderLineByLine() {
-			String[] splitted = TEST_HEADER.split("\\r\\n", -1);
-			lines = Arrays.asList(splitted);
-			it = lines.iterator();
-		}
-
-		@Override
-		public String answer(InvocationOnMock invocation) throws Throwable {
-			return it.next();
-		}
 	}
 }
