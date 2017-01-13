@@ -6,15 +6,19 @@
 
 package proxyserver5;
 
+import java.util.Map;
+
 /**
  *
  * @author ASUS
  */
 public class ServerResponse {
     private String responseRaw;
+    private Map<String, String> headers;
 
-    public ServerResponse(String responseRaw) {
+    public ServerResponse(String responseRaw, Map<String, String> headers) {
         setResponseRaw(responseRaw);
+        setHeaders(headers);
     }
 
     public String getResponseRaw() {
@@ -24,5 +28,16 @@ public class ServerResponse {
     public void setResponseRaw(String responseRaw) {
         this.responseRaw = responseRaw;
     }
-    
+
+	public Map<String, String> getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(Map<String, String> headers) {
+		this.headers = headers;
+	}
+
+	public void updateMaxAge(long expiration) {
+		
+	}
 }

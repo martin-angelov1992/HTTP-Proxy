@@ -69,7 +69,7 @@ public class ServerRequest {
             sb.append(line);
             readingUtil.readHeaders(sb, in, headers);
             if(code == 304) { // not modified
-                return new ServerResponse(sb.toString());
+                return new ServerResponse(sb.toString(), headers);
             }
             if("chunked".equals(headers.get("Transfer-Encoding"))) {
                 sb.append(readChunkedData(in));
@@ -80,7 +80,7 @@ public class ServerRequest {
             }
             //System.out.println(sb.toString());
             logger.debug("<Returning server response>");
-            return new ServerResponse(sb.toString());
+            return new ServerResponse(sb.toString(), headers);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

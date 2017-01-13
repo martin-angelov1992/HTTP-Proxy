@@ -9,6 +9,7 @@ package proxyserver5;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.inject.Inject;
@@ -29,7 +30,7 @@ public class UserRequest {
     private String host;
     private String method;
     private String query;
-    private HashMap<String, String> headers;
+    private Map<String, String> headers;
     private Socket serverSocket;
     @Inject
     private ReadingUtil readingUtil;
