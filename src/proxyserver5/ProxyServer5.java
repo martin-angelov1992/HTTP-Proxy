@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import proxyserver5.cache.Evictor;
+
 /**
  *
  * @author ASUS
@@ -43,6 +45,8 @@ public class ProxyServer5 {
                 die("Port can't be negative");
             }
         }
+		Evictor evictor = injector.getInstance(Evictor.class);
+		evictor.start();
         task.start(port);
     }
 

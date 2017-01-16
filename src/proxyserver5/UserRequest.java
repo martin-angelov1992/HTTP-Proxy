@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import proxyserver5.cache.ProxyCache;
+
 /**
  *
  * @author ASUS
@@ -34,6 +36,8 @@ public class UserRequest {
     private Socket serverSocket;
     @Inject
     private ReadingUtil readingUtil;
+    @Inject
+    private ProxyCache cache;
 
     public UserRequest(Scanner in, OutputStream out, Socket serverSocket) {
         setOut(out);
@@ -125,7 +129,20 @@ public class UserRequest {
         this.requestRaw = requestRaw;
     }
     public ServerResponse send() {
+        ServerResponse cachedResponse = cache.tryAnswerFromCache(this);
+
+        if (cachedResponse != null) {
+        	return cachedResponse;
+        }
+
         ServerRequest serverRequest = new ServerRequest(this);
-        return serverRequest.send();
+
+        ServerResponse response = serverRequest.send();
+
+        if ("GET".equals(getMethod())) {
+        	cache.tryCache(response, getQuery());
+        }
+
+        return response;
     }
 }

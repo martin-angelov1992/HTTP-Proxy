@@ -38,6 +38,14 @@ public class ServerResponse {
 	}
 
 	public void updateMaxAge(long expiration) {
+		String cacheHeader = headers.get("Cache-Control");
+
+		if (cacheHeader == null) {
+			return;
+		}
+
+		String[] headerAndBody = responseRaw.split("\r\n\r\n", 1);
+
 		
 	}
 }

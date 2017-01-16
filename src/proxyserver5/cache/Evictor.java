@@ -5,9 +5,10 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import proxyserver5.ServerResponse;
+import javax.inject.Inject;
 
 public class Evictor {
+	@Inject
 	private ProxyCache cache;
 
 	private static final long EVICTION_INTERVAL = 2 * 60 * 1000; // Every 2
@@ -20,21 +21,7 @@ public class Evictor {
 																// cache
 
 	private void evict() {
-		evictETags();
 		evictMaxAge();
-	}
-
-	private void evictETags() {
-		Map<String, ServerReponseData> eTagMap = cache.getETagMap();
-
-		Iterator<ServerReponseData> it = eTagMap.values().iterator();
-		while (it.hasNext()) {
-			ServerReponseData data = it.next();
-
-			if (data.getLastUsage() + STALING_TIME < System.currentTimeMillis()) {
-				it.remove();
-			}
-		}
 	}
 
 	private void evictMaxAge() {
