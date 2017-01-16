@@ -14,7 +14,7 @@ import proxyserver5.UserRequest;
 
 public class ProxyCache {
 	private Map<String, MaxAgeCacheData> expirationData;
-	private SimpleDateFormat headerFormatParser = new SimpleDateFormat("D, d M Y H:i:s T");
+	private SimpleDateFormat headerFormatParser = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
 	static Logger logger = LoggerFactory.getLogger(ProxyCache.class.getName());
 
 	public ProxyCache() {
@@ -96,7 +96,11 @@ public class ProxyCache {
 
 		MaxAgeCacheData data = expirationData.get(request.getQuery());
 
-		if (data.getExpiration() > System.currentTimeMillis()) {
+		if (data == null) {
+			return null;
+		}
+
+		if (data.getExpiration() < System.currentTimeMillis()) {
 			expirationData.remove(request.getQuery());
 			return null;
 		}

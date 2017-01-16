@@ -89,4 +89,9 @@ public class UserRequestTest {
 		Assert.assertEquals("/tutorials/other/top-20-mysql-best-practices/", request.getQuery());
 		Assert.assertEquals(EXPECTED_REQUEST_RAW, request.getRequestRaw());
 	}
+
+	@Test
+	public void shouldUseCache() {
+		
+	}
 }
