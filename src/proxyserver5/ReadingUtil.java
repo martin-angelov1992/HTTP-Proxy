@@ -51,7 +51,6 @@ public class ReadingUtil {
                     break;
                 }
             }
-            //System.out.println("<read headers>");
         } catch (Exception e) {
             e.printStackTrace();
         }

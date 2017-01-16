@@ -7,7 +7,11 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Evictor {
+	static Logger logger = LoggerFactory.getLogger(Evictor.class.getName());
 	@Inject
 	private ProxyCache cache;
 
@@ -27,6 +31,7 @@ public class Evictor {
 	private void evictMaxAge() {
 		Map<String, MaxAgeCacheData> expDataMap = cache.getExpirationData();
 
+		expDataMap.entrySet()
 		Iterator<MaxAgeCacheData> it = expDataMap.values().iterator();
 		while (it.hasNext()) {
 			MaxAgeCacheData data = it.next();
@@ -39,6 +44,7 @@ public class Evictor {
 	}
 
 	public void start() {
+		logger.debug("Evictor started.");
 		Timer timer = new Timer();
 		TimerTask scheduler = new EvictionScheduler();
 		timer.schedule(scheduler, EVICTION_INTERVAL, EVICTION_INTERVAL); // Create
@@ -54,6 +60,7 @@ public class Evictor {
 
 		@Override
 		public void run() {
+			logger.debug("Eviction time.");
 			evict();
 		}
 	}

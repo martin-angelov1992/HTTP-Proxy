@@ -37,7 +37,7 @@ public class ProxyTask {
 	}
 
 	public static void die(String error) {
-        System.out.println(error);
+		logger.error(error);
         System.exit(-1);
     }
 }

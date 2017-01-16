@@ -59,7 +59,6 @@ public class ServerRequest {
             InputStream in = serverSocket.getInputStream();
             HashMap<String, String> headers = new LinkedHashMap<>();
             String line = readingUtil.readLineFromStream(in);
-            //System.out.println(line);
             String parts[] = line.trim().split(" ");
             if(parts.length < 2) {
                 return null;
@@ -79,7 +78,6 @@ public class ServerRequest {
             } else {
                 sb.append(readData(in));
             }
-            //System.out.println(sb.toString());
             logger.debug("<Returning server response>");
             return new ServerResponse(sb.toString(), headers, line);
         } catch (Exception e) {
@@ -122,7 +120,6 @@ public class ServerRequest {
         try {
             logger.debug("<reading data from server>");
             while((c = in.read()) != -1) {
-                //Logger.logDebug((char)c);
                 sb.append((char)c);
             }
             if(c == -1) {
@@ -140,7 +137,6 @@ public class ServerRequest {
         String line = readingUtil.readLineFromStream(in);
         sb.append(line);
         int charsLeft = Integer.parseInt(line.trim(), 16);
-//        System.out.println("<chars left: "+charsLeft+">");
         try {
             logger.debug("<Reading chunked data>");
             int c = -2;
@@ -150,15 +146,13 @@ public class ServerRequest {
                     line = readingUtil.readLineFromStream(in);
                     sb.append(line);
                     charsLeft = Integer.parseInt(line.trim(), 16);
-//                    System.out.println("<chars left: "+charsLeft+">");
                     if(charsLeft == 0) {
                         sb.append("\r\n");
                         break;
                     }
                 } else {
                     --charsLeft;
-                }
-                //System.out.print((char)c);                
+                }        
             }
             if(c == -1) {
                 logger.debug("<got -1>");
