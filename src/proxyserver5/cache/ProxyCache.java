@@ -67,8 +67,8 @@ public class ProxyCache {
 			if (directive.matches("^max-age=[0-9]+$")) {
 				String[] parts = directive.split("=");
 				age = Long.valueOf(parts[1]);
-			} else if (directive.matches("^private") || directive.matches("^no-cache") || 
-					directive.matches("^no-store")) {
+			} else if (directive.matches("^private") || directive.matches("^no-cache")
+					|| directive.matches("^no-store")) {
 				return CacheByMaxAgeResult.SHOULD_NOT_CACHE;
 			} else if (directive.matches("public")) {
 				isPublic = true;
@@ -83,7 +83,8 @@ public class ProxyCache {
 			return CacheByMaxAgeResult.UNABLE_TO_CACHE;
 		}
 
-		MaxAgeCacheData data = new MaxAgeCacheData(System.currentTimeMillis(), System.currentTimeMillis() + age*1000, serverResponse);
+		MaxAgeCacheData data = new MaxAgeCacheData(System.currentTimeMillis(), System.currentTimeMillis() + age * 1000,
+				serverResponse);
 		expirationData.put(URL, data);
 		return CacheByMaxAgeResult.CACHED;
 	}
@@ -106,7 +107,7 @@ public class ProxyCache {
 		}
 
 		// We need to send response with the remaining time
-		data.getServerResponse().updateMaxAge(data.getExpiration());
+		data.getServerResponse().updateMaxAge((data.getExpiration() - System.currentTimeMillis()) / 1000);
 		return data.getServerResponse();
 	}
 

@@ -15,10 +15,12 @@ import java.util.Map;
 public class ServerResponse {
     private String responseRaw;
     private Map<String, String> headers;
+    private String firstLine;
 
-    public ServerResponse(String responseRaw, Map<String, String> headers) {
+    public ServerResponse(String responseRaw, Map<String, String> headers, String firstLine) {
         setResponseRaw(responseRaw);
         setHeaders(headers);
+        setFirstLine(firstLine);
     }
 
     public String getResponseRaw() {
@@ -37,7 +39,15 @@ public class ServerResponse {
 		this.headers = headers;
 	}
 
-	public void updateMaxAge(long expiration) {
+	public String getFirstLine() {
+		return firstLine;
+	}
+
+	public void setFirstLine(String firstLine) {
+		this.firstLine = firstLine;
+	}
+
+	public void updateMaxAge(long newMaxAge) {
 		String cacheHeader = headers.get("Cache-Control");
 
 		if (cacheHeader == null) {
@@ -49,25 +59,23 @@ public class ServerResponse {
 		for (int i=0;i<directives.length;++i) {
 			String directive = directives[i];
 			if (directive.matches("^max-age=[0-9]+")) {
-				String[] parts = directive.split("=");
-				long newMaxAge = (expiration - System.currentTimeMillis())/1000;
-				parts[i] = "max-age="+newMaxAge;
+				directives[i] = "max-age="+newMaxAge;
 				break;
 			}
 		}
 
 		headers.put("Cache-Control", String.join(", ", directives));
 
-		String[] headerAndBody = responseRaw.split("\r\n\r\n", 1);
+		String[] headerAndBody = responseRaw.split("\r\n\r\n", 2);
 
 		String body = headerAndBody[1];
 
 		StringBuilder headerSb = new StringBuilder();
 
 		for (Map.Entry<String, String> entry : headers.entrySet()) {
-			headerSb.append(entry.getKey()+": "+entry.getValue());
+			headerSb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\r\n");
 		}
 
-		responseRaw = headerSb.toString()+"\r\n\r\n"+body;
+		responseRaw = firstLine+"\r\n"+headerSb.toString()+"\r\n"+body;
 	}
 }

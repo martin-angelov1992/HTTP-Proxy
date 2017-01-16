@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import javax.inject.Inject;
 
@@ -56,7 +57,7 @@ public class ServerRequest {
             out.format("%s", userRequest.getRequestRaw());
             out.flush();
             InputStream in = serverSocket.getInputStream();
-            HashMap<String, String> headers = new HashMap<>();
+            HashMap<String, String> headers = new LinkedHashMap<>();
             String line = readingUtil.readLineFromStream(in);
             //System.out.println(line);
             String parts[] = line.trim().split(" ");
@@ -69,7 +70,7 @@ public class ServerRequest {
             sb.append(line);
             readingUtil.readHeaders(sb, in, headers);
             if(code == 304) { // not modified
-                return new ServerResponse(sb.toString(), headers);
+                return new ServerResponse(sb.toString(), headers, line);
             }
             if("chunked".equals(headers.get("Transfer-Encoding"))) {
                 sb.append(readChunkedData(in));
@@ -80,7 +81,7 @@ public class ServerRequest {
             }
             //System.out.println(sb.toString());
             logger.debug("<Returning server response>");
-            return new ServerResponse(sb.toString(), headers);
+            return new ServerResponse(sb.toString(), headers, line);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
