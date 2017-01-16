@@ -32,16 +32,16 @@ public class Evictor {
 			MaxAgeCacheData data = it.next();
 
 			if (data.getLastUsage() + STALING_TIME < System.currentTimeMillis() || 
-					data.getExpiration() > System.currentTimeMillis()) {
+					data.getExpiration() < System.currentTimeMillis()) {
 				it.remove();
 			}
 		}
 	}
 
 	public void start() {
-		Timer time = new Timer();
+		Timer timer = new Timer();
 		TimerTask scheduler = new EvictionScheduler();
-		time.schedule(scheduler, EVICTION_INTERVAL, EVICTION_INTERVAL); // Create
+		timer.schedule(scheduler, EVICTION_INTERVAL, EVICTION_INTERVAL); // Create
 																		// Repetitively
 																		// task
 																		// for
