@@ -45,6 +45,8 @@ public class ServerResponseTest {
 
 		ServerResponse toTest = new ServerResponse(responseRaw, headers, "HTTP/1.1 200 OK");
 
+		toTest.updateMaxAge(30);
+
 		Assert.assertEquals("HTTP/1.1 200 OK\r\n"+
 							"Host: net.tutsplus.com\r\n"+
 							"User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)\r\n"+

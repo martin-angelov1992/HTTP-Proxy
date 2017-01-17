@@ -45,6 +45,7 @@ public class ProxyCache {
 		try {
 			Date date = headerFormatParser.parse(expires);
 			MaxAgeCacheData data = new MaxAgeCacheData(System.currentTimeMillis(), date.getTime(), serverResponse);
+			logger.debug("Caching {}", URL);
 			expirationData.put(URL, data);
 		} catch (ParseException e) {
 			logger.error("Unable to parse {}", expires);
@@ -85,6 +86,7 @@ public class ProxyCache {
 
 		MaxAgeCacheData data = new MaxAgeCacheData(System.currentTimeMillis(), System.currentTimeMillis() + age * 1000,
 				serverResponse);
+		logger.debug("Caching {}", URL);
 		expirationData.put(URL, data);
 		return CacheByMaxAgeResult.CACHED;
 	}
@@ -102,6 +104,7 @@ public class ProxyCache {
 		}
 
 		if (data.getExpiration() < System.currentTimeMillis()) {
+			logger.debug("Evicting {}", request.getQuery());
 			expirationData.remove(request.getQuery());
 			return null;
 		}

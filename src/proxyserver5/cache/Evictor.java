@@ -2,6 +2,8 @@ package proxyserver5.cache;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,14 +33,17 @@ public class Evictor {
 	private void evictMaxAge() {
 		Map<String, MaxAgeCacheData> expDataMap = cache.getExpirationData();
 
-		expDataMap.entrySet()
-		Iterator<MaxAgeCacheData> it = expDataMap.values().iterator();
+		Set<Entry<String, MaxAgeCacheData>> entrySet = expDataMap.entrySet();
+		Iterator<Entry<String, MaxAgeCacheData>> it = entrySet.iterator();
 		while (it.hasNext()) {
-			MaxAgeCacheData data = it.next();
+			Entry<String, MaxAgeCacheData> entry = it.next();
+			String query = entry.getKey();
+			MaxAgeCacheData data = entry.getValue();
 
 			if (data.getLastUsage() + STALING_TIME < System.currentTimeMillis() || 
 					data.getExpiration() < System.currentTimeMillis()) {
 				it.remove();
+				logger.debug("Evicting data about {}", query);
 			}
 		}
 	}
