@@ -19,6 +19,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.google.inject.Injector;
+
 import proxyserver5.Connection;
 import proxyserver5.ServerResponse;
 import proxyserver5.UserRequest;
@@ -40,6 +42,8 @@ public class ConnectionTest {
 	@Mock
 	private OutputStream outputStreamMock;
 
+	private static Injector injector = PowerMockito.mock(Injector.class);
+
 	private static final String SITE_1 = "google.com";
 	private static final String SITE_2 = "youtube.com";
 	private static final int SITE_1_REQUESTS_COUNT = 1;
@@ -49,7 +53,7 @@ public class ConnectionTest {
 
 	@Test
 	public void test() throws Exception {
-		PowerMockito.whenNew(UserRequest.class).withArguments(scannerMock, outputStreamMock, null).then(e -> {
+		PowerMockito.whenNew(UserRequest.class).withArguments(scannerMock, outputStreamMock, null, injector).then(e -> {
 			return new UserRequestMock(scannerMock, outputStreamMock, null);
 		});
 		PowerMockito.whenNew(UserResponse.class).withAnyArguments().thenReturn(new UserResponseMock(null, null));
@@ -60,7 +64,7 @@ public class ConnectionTest {
 
 		// Test with specific number of connections
 		for (int i = 0; i < CONNECTION_COUNT; ++i) {
-			Connection toTest = new Connection(socketMock, requests);
+			Connection toTest = new Connection(socketMock, requests, injector);
 			toTest.setSocket(socketMock);
 			toTest.call();
 		}
@@ -99,7 +103,7 @@ public class ConnectionTest {
 		private String host = null;
 
 		public UserRequestMock(Scanner in, OutputStream out, Socket serverSocket) {
-			super(in, out, serverSocket);
+			super(in, out, serverSocket, injector);
 			host = hosts.poll();
 		}
 

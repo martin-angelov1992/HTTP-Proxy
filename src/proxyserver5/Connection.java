@@ -15,6 +15,8 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Injector;
+
 /**
  *
  * @author ASUS
@@ -22,13 +24,15 @@ import org.slf4j.LoggerFactory;
 public class Connection implements Callable<Object> {
 	private Socket socket;
 	private Map<String, Integer> requests;
+	private Injector injector;
 	private final int id;
 	private static int counter = 0;
 
 	static Logger logger = LoggerFactory.getLogger(Connection.class.getName());
 
-	public Connection(Socket socket, Map<String, Integer> requests) {
+	public Connection(Socket socket, Map<String, Integer> requests, Injector injector) {
 		this.id = ++counter;
+		this.injector = injector;
 		setRequests(requests);
 		setSocket(socket);
 	}
@@ -50,7 +54,8 @@ public class Connection implements Callable<Object> {
 				out = socket.getOutputStream();
 				in = new Scanner(socket.getInputStream());
 				logger.info("<parsing now {}>", id);
-				UserRequest userRequest = new UserRequest(in, out, serverSocket);
+				UserRequest userRequest = new UserRequest(in, out, serverSocket, injector);
+				injector.injectMembers(userRequest);
 				userRequest.readRequest();
 		        logger.debug("<read user request>");
 				String host = userRequest.getHost();

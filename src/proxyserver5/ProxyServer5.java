@@ -27,11 +27,12 @@ public class ProxyServer5 {
      * @param args the command line arguments
      */
     private static final int DEFAULT_PORT = 12345;
-    public void main(String[] args) throws IOException {
+
+    public static void main(String[] args) throws IOException {
         int port = 0;
         logger.info("Startting...");
 		Injector injector = Guice.createInjector(new ProxyModule());		
-		ProxyTask task = injector.getInstance(ProxyTask.class);
+		ProxyTask task = new ProxyTask(injector);
         if(args.length == 0) {
             logger.info("Using default port: {}\n", DEFAULT_PORT);
             port = DEFAULT_PORT;

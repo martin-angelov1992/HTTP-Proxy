@@ -14,6 +14,8 @@ import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.google.inject.Injector;
+
 import proxyserver5.ReadingUtil;
 import proxyserver5.UserRequest;
 
@@ -57,6 +59,9 @@ public class UserRequestTest {
 	@Mock
 	private Socket serverSocket;
 
+	@Mock
+	private Injector injector;
+
 	private static final Map<String, String> EXPECTED_HEADERS = new HashMap<>();
 
 	static {
@@ -77,7 +82,7 @@ public class UserRequestTest {
 		when(in.hasNextLine()).thenReturn(true);
 		when(in.nextLine()).then(new DataLineByLine(TEST_REQUEST));
 
-		UserRequest request = new UserRequest(in, out, serverSocket);
+		UserRequest request = new UserRequest(in, out, serverSocket, injector);
 
 		MemberModifier.field(UserRequest.class, "readingUtil").set(
 				request, new ReadingUtil());
@@ -88,10 +93,5 @@ public class UserRequestTest {
 		Assert.assertEquals("GET", request.getMethod());
 		Assert.assertEquals("/tutorials/other/top-20-mysql-best-practices/", request.getQuery());
 		Assert.assertEquals(EXPECTED_REQUEST_RAW, request.getRequestRaw());
-	}
-
-	@Test
-	public void shouldUseCache() {
-		
 	}
 }

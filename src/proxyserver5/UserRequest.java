@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Injector;
+
 import proxyserver5.cache.ProxyCache;
 
 /**
@@ -38,11 +40,13 @@ public class UserRequest {
     private ReadingUtil readingUtil;
     @Inject
     private ProxyCache cache;
+    private Injector injector;
 
-    public UserRequest(Scanner in, OutputStream out, Socket serverSocket) {
+    public UserRequest(Scanner in, OutputStream out, Socket serverSocket, Injector injector) {
         setOut(out);
         setIn(in);
         setServerSocket(serverSocket);
+        this.injector = injector;
         headers = new HashMap<>();
         requestRaw = "";
         logger.debug("<reading user request>");
@@ -136,6 +140,7 @@ public class UserRequest {
         }
 
         ServerRequest serverRequest = new ServerRequest(this);
+        injector.injectMembers(serverRequest);
 
         ServerResponse response = serverRequest.send();
 
