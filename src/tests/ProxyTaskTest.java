@@ -59,7 +59,7 @@ public class ProxyTaskTest {
 		starterThread.start();
 
 		while (serverSocketMock.getAcceptedCount() != 3) {
-			Thread.sleep(100);
+			Thread.sleep(500);
 		}
 
 		starterThread.interrupt();
@@ -110,7 +110,7 @@ public class ProxyTaskTest {
 						wait();
 					}
 				} catch (InterruptedException e) {
-					throw new RuntimeException("This thread got unexpectedly interrupted.");
+					throw new RuntimeException("This thread got unexpectedly interrupted.", e);
 				}
 			}
 			++acceptedCount;

@@ -3,6 +3,7 @@ package proxyserver5.cache;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,7 +15,7 @@ import proxyserver5.UserRequest;
 
 public class ProxyCache {
 	private Map<String, MaxAgeCacheData> expirationData;
-	private SimpleDateFormat headerFormatParser = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+	private SimpleDateFormat headerFormatParser = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
 	static Logger logger = LoggerFactory.getLogger(ProxyCache.class.getName());
 
 	public ProxyCache() {
@@ -111,6 +112,7 @@ public class ProxyCache {
 
 		// We need to send response with the remaining time
 		data.getServerResponse().updateMaxAge((data.getExpiration() - System.currentTimeMillis()) / 1000);
+		logger.debug("Returning cached response for {}", request.getQuery());
 		return data.getServerResponse();
 	}
 

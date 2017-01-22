@@ -30,7 +30,7 @@ public class ProxyServer5 {
 
     public static void main(String[] args) throws IOException {
         int port = 0;
-        logger.info("Startting...");
+        logger.info("Starting...");
 		Injector injector = Guice.createInjector(new ProxyModule());		
 		ProxyTask task = new ProxyTask(injector);
         if(args.length == 0) {

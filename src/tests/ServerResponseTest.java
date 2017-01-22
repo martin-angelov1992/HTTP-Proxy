@@ -27,7 +27,7 @@ public class ServerResponseTest {
 				"Cookie: PHPSESSID=r2t5uvjq435r4q7ib3vtdjq120\r\n"+
 				"Pragma: no-cache\r\n"+
 				"Cache-Control: public, max-age=360, no-transform\r\n\r\n"+
-				"<html><body><h1>Hello, World!</h1></body></html>";
+				"<html><body><h1>Hello, World!\r\n\r\n</h1></body></html>";
 
 		Map<String, String> headers = new LinkedHashMap<>();
 
@@ -43,7 +43,7 @@ public class ServerResponseTest {
 		headers.put("Pragma", "no-cache");
 		headers.put("Cache-Control", "public, max-age=360, no-transform");
 
-		ServerResponse toTest = new ServerResponse(responseRaw, headers, "HTTP/1.1 200 OK");
+		ServerResponse toTest = new ServerResponse((char)200, responseRaw, headers, "HTTP/1.1 200 OK\r\n");
 
 		toTest.updateMaxAge(30);
 
@@ -58,7 +58,7 @@ public class ServerResponseTest {
 							"Cookie: PHPSESSID=r2t5uvjq435r4q7ib3vtdjq120\r\n"+
 							"Pragma: no-cache\r\n"+
 							"Cache-Control: public, max-age=30, no-transform\r\n\r\n"+
-							"<html><body><h1>Hello, World!</h1></body></html>", toTest.getResponseRaw());
+							"<html><body><h1>Hello, World!\r\n\r\n</h1></body></html>", toTest.getResponseRaw());
 
 		Assert.assertEquals("public, max-age=30, no-transform", toTest.getHeaders().get("Cache-Control"));
 	}

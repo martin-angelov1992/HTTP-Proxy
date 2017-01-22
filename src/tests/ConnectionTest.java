@@ -115,7 +115,7 @@ public class ConnectionTest {
 		@Override
 		public ServerResponse send() {
 			// Do not send anything, return dummy response
-			return new ServerResponse("", new HashMap<>(), "HTTP/1.1 200 OK");
+			return new ServerResponse((char)200, "", new HashMap<>(), "HTTP/1.1 200 OK");
 		}
 
 		@Override

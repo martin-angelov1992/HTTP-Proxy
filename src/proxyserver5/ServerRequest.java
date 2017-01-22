@@ -63,13 +63,19 @@ public class ServerRequest {
             if(parts.length < 2) {
                 return null;
             }
-            code = (char)Integer.parseInt(parts[1]);
+
+            try {
+            	code = (char)Integer.parseInt(parts[1]);
+            } catch (NumberFormatException e) {
+            	logger.error("Unable to parse code", e);
+            }
+
             logger.debug("<Reading server headers>");
             StringBuilder sb = new StringBuilder();
             sb.append(line);
             readingUtil.readHeaders(sb, in, headers);
             if(code == 304) { // not modified
-                return new ServerResponse(sb.toString(), headers, line);
+                return new ServerResponse(code, sb.toString(), headers, line);
             }
             if("chunked".equals(headers.get("Transfer-Encoding"))) {
                 sb.append(readChunkedData(in));
@@ -79,7 +85,7 @@ public class ServerRequest {
                 sb.append(readData(in));
             }
             logger.debug("<Returning server response>");
-            return new ServerResponse(sb.toString(), headers, line);
+            return new ServerResponse(code ,sb.toString(), headers, line);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

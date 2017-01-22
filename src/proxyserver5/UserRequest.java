@@ -144,7 +144,7 @@ public class UserRequest {
 
         ServerResponse response = serverRequest.send();
 
-        if ("GET".equals(getMethod())) {
+        if ("GET".equals(getMethod()) && response.getCode() == 200) {
         	cache.tryCache(response, getQuery());
         }
 

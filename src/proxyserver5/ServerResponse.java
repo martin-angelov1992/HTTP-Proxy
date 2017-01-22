@@ -16,11 +16,13 @@ public class ServerResponse {
     private String responseRaw;
     private Map<String, String> headers;
     private String firstLine;
+    private char code;
 
-    public ServerResponse(String responseRaw, Map<String, String> headers, String firstLine) {
+    public ServerResponse(char code, String responseRaw, Map<String, String> headers, String firstLine) {
         setResponseRaw(responseRaw);
         setHeaders(headers);
         setFirstLine(firstLine);
+        this.code = code;
     }
 
     public String getResponseRaw() {
@@ -45,6 +47,10 @@ public class ServerResponse {
 
 	public void setFirstLine(String firstLine) {
 		this.firstLine = firstLine;
+	}
+
+	public char getCode() {
+		return code;
 	}
 
 	public void updateMaxAge(long newMaxAge) {
@@ -76,6 +82,6 @@ public class ServerResponse {
 			headerSb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\r\n");
 		}
 
-		responseRaw = firstLine+"\r\n"+headerSb.toString()+"\r\n"+body;
+		responseRaw = firstLine+headerSb.toString()+"\r\n"+body;
 	}
 }
