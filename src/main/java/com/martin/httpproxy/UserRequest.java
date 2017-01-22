@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package proxyserver5;
+package com.martin.httpproxy;
 
 import java.io.OutputStream;
 import java.net.Socket;
@@ -18,8 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Injector;
-
-import proxyserver5.cache.ProxyCache;
+import com.martin.httpproxy.cache.ProxyCache;
 
 /**
  *

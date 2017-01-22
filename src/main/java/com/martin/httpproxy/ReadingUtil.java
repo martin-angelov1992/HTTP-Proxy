@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package proxyserver5;
+package com.martin.httpproxy;
 
 import java.io.InputStream;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package tests;
+package com.martin.httpproxy.tests;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,11 +20,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.inject.Injector;
-
-import proxyserver5.Connection;
-import proxyserver5.ServerResponse;
-import proxyserver5.UserRequest;
-import proxyserver5.UserResponse;
+import com.martin.httpproxy.Connection;
+import com.martin.httpproxy.ServerResponse;
+import com.martin.httpproxy.UserRequest;
+import com.martin.httpproxy.UserResponse;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Connection.class, UserRequest.class})

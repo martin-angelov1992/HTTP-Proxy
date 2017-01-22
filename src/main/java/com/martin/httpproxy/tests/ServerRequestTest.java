@@ -1,4 +1,4 @@
-package tests;
+package com.martin.httpproxy.tests;
 
 import static org.powermock.api.mockito.PowerMockito.*;
 
@@ -18,10 +18,10 @@ import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import proxyserver5.ReadingUtil;
-import proxyserver5.ServerRequest;
-import proxyserver5.ServerResponse;
-import proxyserver5.UserRequest;
+import com.martin.httpproxy.ReadingUtil;
+import com.martin.httpproxy.ServerRequest;
+import com.martin.httpproxy.ServerResponse;
+import com.martin.httpproxy.UserRequest;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Socket.class, UserRequest.class, ServerRequest.class, Formatter.class})

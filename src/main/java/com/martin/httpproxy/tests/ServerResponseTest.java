@@ -1,4 +1,4 @@
-package tests;
+package com.martin.httpproxy.tests;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import proxyserver5.ServerResponse;
+import com.martin.httpproxy.ServerResponse;
 
 @RunWith(PowerMockRunner.class)
 public class ServerResponseTest {

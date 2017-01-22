@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package proxyserver5;
+package com.martin.httpproxy;
 
 import java.io.IOException;
 
@@ -13,8 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-
-import proxyserver5.cache.Evictor;
+import com.martin.httpproxy.cache.Evictor;
 
 /**
  *

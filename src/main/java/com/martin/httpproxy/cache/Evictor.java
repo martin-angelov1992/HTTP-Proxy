@@ -1,4 +1,4 @@
-package proxyserver5.cache;
+package com.martin.httpproxy.cache;
 
 import java.util.Iterator;
 import java.util.Map;

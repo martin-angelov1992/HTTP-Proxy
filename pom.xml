@@ -4,6 +4,8 @@
 	<groupId>com.martin</groupId>
 	<artifactId>httpproxy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+		<!-- Output to jar format -->
+	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -46,15 +48,25 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>2.3.2</version>
 				<configuration>
-					<verbose>true</verbose>
-					<fork>true</fork>
-					<executable><!-- path-to-javac -->
-					</executable>
-					<compilerVersion>1.8</compilerVersion>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
+		    <plugin>
+		      <artifactId>maven-assembly-plugin</artifactId>
+		      <configuration>
+		        <archive>
+		          <manifest>
+		            <mainClass>com.martin.httpproxy.ProxyServer5</mainClass>
+		          </manifest>
+		        </archive>
+		        <descriptorRefs>
+		          <descriptorRef>jar-with-dependencies</descriptorRef>
+		        </descriptorRefs>
+		      </configuration>
+		    </plugin>
 		</plugins>
 	</build>
 </project>

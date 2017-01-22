@@ -1,4 +1,4 @@
-package tests;
+package com.martin.httpproxy.tests;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,9 +15,9 @@ import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import proxyserver5.cache.Evictor;
-import proxyserver5.cache.MaxAgeCacheData;
-import proxyserver5.cache.ProxyCache;
+import com.martin.httpproxy.cache.Evictor;
+import com.martin.httpproxy.cache.MaxAgeCacheData;
+import com.martin.httpproxy.cache.ProxyCache;
 
 import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Matchers.any;

@@ -1,4 +1,4 @@
-package proxyserver5.cache;
+package com.martin.httpproxy.cache;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import proxyserver5.ServerResponse;
-import proxyserver5.UserRequest;
+import com.martin.httpproxy.ServerResponse;
+import com.martin.httpproxy.UserRequest;
 
 public class ProxyCache {
 	private Map<String, MaxAgeCacheData> expirationData;

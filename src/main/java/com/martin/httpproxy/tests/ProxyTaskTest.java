@@ -1,4 +1,4 @@
-package tests;
+package com.martin.httpproxy.tests;
 
 import static org.powermock.api.mockito.PowerMockito.*;
 import static org.mockito.Mockito.times;
@@ -22,9 +22,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.inject.Injector;
-
-import proxyserver5.Connection;
-import proxyserver5.ProxyTask;
+import com.martin.httpproxy.Connection;
+import com.martin.httpproxy.ProxyTask;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ServerSocket.class, Executors.class, ProxyTask.class, ExecutorService.class})

@@ -1,11 +1,10 @@
-package proxyserver5;
+package com.martin.httpproxy;
 
 import javax.inject.Singleton;
 
 import com.google.inject.AbstractModule;
-
-import proxyserver5.cache.Evictor;
-import proxyserver5.cache.ProxyCache;
+import com.martin.httpproxy.cache.Evictor;
+import com.martin.httpproxy.cache.ProxyCache;
 
 public class ProxyModule extends AbstractModule {
 	@Override

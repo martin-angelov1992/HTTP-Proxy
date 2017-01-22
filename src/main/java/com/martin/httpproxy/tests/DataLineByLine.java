@@ -1,4 +1,4 @@
-package tests;
+package com.martin.httpproxy.tests;
 
 import java.util.Arrays;
 import java.util.Iterator;

@@ -1,6 +1,6 @@
-package proxyserver5.cache;
+package com.martin.httpproxy.cache;
 
-import proxyserver5.ServerResponse;
+import com.martin.httpproxy.ServerResponse;
 
 public class MaxAgeCacheData {
 	private long lastUsage;

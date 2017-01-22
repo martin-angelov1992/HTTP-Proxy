@@ -1,4 +1,4 @@
-package tests;
+package com.martin.httpproxy.tests;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,9 +7,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import proxyserver5.ServerResponse;
-import proxyserver5.UserRequest;
-import proxyserver5.cache.ProxyCache;
+import com.martin.httpproxy.ServerResponse;
+import com.martin.httpproxy.UserRequest;
+import com.martin.httpproxy.cache.ProxyCache;
 
 import static org.powermock.api.mockito.PowerMockito.*;
 

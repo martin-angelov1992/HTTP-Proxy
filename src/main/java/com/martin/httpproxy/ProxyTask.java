@@ -1,4 +1,4 @@
-package proxyserver5;
+package com.martin.httpproxy;
 
 import java.io.IOException;
 import java.net.ServerSocket;
